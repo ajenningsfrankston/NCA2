@@ -7,6 +7,23 @@ import torch
 import math
 
 
+# from training display
+
+base_path='/kaggle/input/arc-prize-2025/'
+
+def load_json(file_path):
+    with open(file_path) as f:
+        data = json.load(f)
+    return data
+
+training_challenges   = load_json(base_path +'arc-agi_training_challenges.json')
+training_solutions    = load_json(base_path +'arc-agi_training_solutions.json')
+
+evaluation_challenges = load_json(base_path +'arc-agi_evaluation_challenges.json')
+evaluation_solutions  = load_json(base_path +'arc-agi_evaluation_solutions.json')
+
+# end training display
+
 def import_data(path: str, device: str="cuda:0") -> (tuple, tuple):
     inputs_tr, outputs_tr = [],[]
     inputs_te, outputs_te = [],[]
