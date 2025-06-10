@@ -7,42 +7,38 @@ import torch
 import math
 
 
-# from training display
 
-base_path='/kaggle/input/arc-prize-2025/'
 
 def load_json(file_path):
     with open(file_path) as f:
         data = json.load(f)
     return data
 
-training_challenges   = load_json(base_path +'arc-agi_training_challenges.json')
-training_solutions    = load_json(base_path +'arc-agi_training_solutions.json')
-
-evaluation_challenges = load_json(base_path +'arc-agi_evaluation_challenges.json')
-evaluation_solutions  = load_json(base_path +'arc-agi_evaluation_solutions.json')
-
-# end training display
 
 def import_data(path: str, device: str="cuda:0") -> (tuple, tuple):
+
+    training_challenges = load_json(path + 'arc-agi_training_challenges.json')
+    #training_solutions = load_json(path + 'arc-agi_training_solutions.json')
+    t = list(training_challenges)
+
     inputs_tr, outputs_tr = [],[]
     inputs_te, outputs_te = [],[]
-    for file_path in os.listdir(path):
+
+    for i in range(0,len(t)-1):
         task_in_tr = []
         task_out_tr = []
         task_in_te = []
         task_out_te = []
-        f_ = os.path.join(path, file_path)
 
-        with open(f_) as data_file:
-            data = json.load(data_file)
-            for pair in data["train"]:
-                task_in_tr.append(torch.tensor(pair["input"], device=device))
-                task_out_tr.append(torch.tensor(pair["output"], device=device))
+        task = training_challenges[t]
 
-            for pair in data["test"]:
-                task_in_te.append(torch.tensor(pair["input"], device=device))
-                task_out_te.append(torch.tensor(pair["output"], device=device))
+        for pair in task["train"]:
+            task_in_tr.append(torch.tensor(pair["input"], device=device))
+            task_out_tr.append(torch.tensor(pair["output"], device=device))
+
+        for pair in task["test"]:
+            task_in_te.append(torch.tensor(pair["input"], device=device))
+            task_out_te.append(torch.tensor(pair["output"], device=device))
 
         inputs_tr.append(task_in_tr)
         outputs_tr.append(task_out_tr)
