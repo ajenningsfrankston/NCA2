@@ -63,5 +63,7 @@ def create_empty_json(filepath):
     directory = os.path.dirname(filepath)
     if directory and not os.path.exists(directory):
         os.makedirs(directory)
-        with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump({}, f) # Writes the empty dictionary as JSON
+        
+    with open(filepath, 'w', encoding='utf-8') as f:
+        print("creating loss file") 
+        json.dump({}, f) # Writes the empty dictionary as JSON
