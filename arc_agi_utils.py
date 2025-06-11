@@ -30,17 +30,18 @@ def import_data(path: str, device: str="cuda:0") -> (tuple, tuple):
         task_in_te = []
         task_out_te = []
 
-        task = training_challenges[t]
-        task_solution = training_solutions[t]
+        task = t[i]
+        task_problem = training_challenges[task]
+        task_solution = training_solutions[task]
 
-        for pair in task["train"]:
+        for pair in task_problem["train"]:
             task_in_tr.append(torch.tensor(pair["input"], device=device))
             task_out_tr.append(torch.tensor(pair["output"], device=device))
 
-        for task_x in task["test"]:
+        for task_x in task_problem["test"]:
             task_in_te.append(torch.tensor(task_x["input"], device=device))
         for task_s in task_solution:
-            task_out_te.append(torch.tensor(task_s["output"], device=device))
+            task_out_te.append(torch.tensor(task_s, device=device))
 
         inputs_tr.append(task_in_tr)
         outputs_tr.append(task_out_tr)
