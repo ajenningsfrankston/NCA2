@@ -5,6 +5,8 @@ import random
 import numpy as np
 import torch
 import math
+import matplotlib.pyplot as plt
+from   matplotlib import colors
 
 
 def load_json(file_path):
@@ -12,12 +14,11 @@ def load_json(file_path):
         data = json.load(f)
     return data
 
-#display data to check
 
 def import_data(path: str, device: str="cuda:0") -> (tuple, tuple):
 
     training_challenges = load_json(path + 'arc-agi_training_challenges.json')
-    #training_solutions = load_json(path + 'arc-agi_training_solutions.json')
+    training_solutions = load_json(path + 'arc-agi_training_solutions.json')
     t = list(training_challenges)
 
     inputs_tr, outputs_tr = [],[]
@@ -30,14 +31,16 @@ def import_data(path: str, device: str="cuda:0") -> (tuple, tuple):
         task_out_te = []
 
         task = training_challenges[t]
+        task_solution = training_solutions[t]
 
         for pair in task["train"]:
             task_in_tr.append(torch.tensor(pair["input"], device=device))
             task_out_tr.append(torch.tensor(pair["output"], device=device))
 
-        for pair in task["test"]:
-            task_in_te.append(torch.tensor(pair["input"], device=device))
-            task_out_te.append(torch.tensor(pair["output"], device=device))
+        for task_x in task["test"]:
+            task_in_te.append(torch.tensor(task_x["input"], device=device))
+        for task_s in task_solution:
+            task_out_te.append(torch.tensor(task_s["output"], device=device))
 
         inputs_tr.append(task_in_tr)
         outputs_tr.append(task_out_tr)
@@ -131,6 +134,7 @@ def arc_to_nca_space(n: int , tensor: torch.Tensor, num_channels: int,gene_size 
         B = (Bprime + mt) *255 *is_invis
 
         return torch.cat((R[None,...],G[None,...],B[None,...], alpha[None,...],padding*255, underlying), dim=0)/255
+    return None
 
 def arc_to_nca_space_relative_encoding(n: int, tensor: torch.Tensor, num_channels: int, gene_size: int, device: str = "cuda:0",
                      mode="rgb", gene_location: list[int] = list[1], tensor2: torch.Tensor = None,
